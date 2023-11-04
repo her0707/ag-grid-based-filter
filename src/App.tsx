@@ -1,11 +1,13 @@
 import { FilterBuilder } from "@/components/filter-builder/FilterBuilder";
 
 function App() {
-  return (
-    <div className="flex justify-center items-center m-6">
-      <FilterBuilder />
-    </div>
-  );
+  const rowDefs = [
+    { colId: "make", colName: "make", colType: "text" },
+    { colId: "model", colName: "model", colType: "text" },
+    { colId: "price", colName: "price", colType: "number" },
+  ] satisfies RowDefs[];
+
+  return <FilterBuilder rowDefs={rowDefs} />;
 }
 
 export default App;

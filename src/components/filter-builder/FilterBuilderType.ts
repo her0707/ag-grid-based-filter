@@ -1,9 +1,13 @@
 type AdvancedFilterModel = JoinAdvancedFilterModel | ColumnAdvancedFilterModel;
 
+type FilterType = "text" | "number" | "boolean" | "date" | "dateString" | "object";
+
 interface JoinAdvancedFilterModel {
   filterType: "join";
   type: "AND" | "OR";
   level: number;
+  id: string;
+  parent?: JoinAdvancedFilterModel;
   conditions: AdvancedFilterModel[];
 }
 
@@ -17,6 +21,7 @@ type ColumnAdvancedFilterModel =
 
 interface BaseFilterModel {
   colId: string;
+  id: string;
   parent?: JoinAdvancedFilterModel;
   level: number;
 }
@@ -81,6 +86,6 @@ interface ObjectAdvancedFilterModel extends BaseFilterModel {
 interface RowDefs {
   colId: string;
   colName: string;
-  filterValues?: { text: string; value: string | number }[];
-  colType: "text" | "number" | "boolean" | "date" | "dateString" | "object";
+  filterValues?: { text: string; value: string }[];
+  colType: FilterType;
 }

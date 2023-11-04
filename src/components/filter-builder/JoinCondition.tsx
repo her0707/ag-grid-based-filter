@@ -4,38 +4,48 @@ import { Plus } from "lucide-react";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { FilterContext } from "./FilterContext";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
+import { generateUniqueId } from "@/utils/utils";
 
 export default function JoinCondition() {
   const { setFilterModel, filterModel } = useContext(FilterContext);
 
   const handleChange = (e: "AND" | "OR") => {
-    setFilterModel(prev => ({
-      ...prev,
-      type: e,
-    }));
+    setFilterModel(draft => (draft.type = e));
   };
 
   const handleAddFilterRow = (type: "group" | "condition") => () => {
     switch (type) {
       case "group":
-        setFilterModel(prev => ({
-          ...prev,
-          conditions: [...prev.conditions, { filterType: "join", type: "AND", level: prev.level + 1, conditions: [] }],
-        }));
+        setFilterModel(draft => {
+          draft.conditions.push({
+            id: generateUniqueId(),
+            filterType: "join",
+            type: "AND",
+            parent: draft,
+            level: draft.level + 1,
+            conditions: [],
+          });
+        });
         break;
 
       case "condition":
-        setFilterModel(prev => ({
-          ...prev,
-          conditions: [...prev.conditions, { filterType: "text", type: "equals", level: prev.level, colId: "" }],
-        }));
+        setFilterModel(draft =>
+          draft.conditions.push({
+            id: generateUniqueId(),
+            filterType: "text",
+            type: "equals",
+            parent: draft,
+            level: draft.level,
+            colId: "",
+          }),
+        );
     }
   };
 
   return (
-    <div className="flex justify-center items-center gap-x-2">
+    <div className="flex items-center gap-x-2">
       <Select onValueChange={handleChange} value={filterModel.type}>
-        <SelectTrigger>
+        <SelectTrigger className="w-auto">
           <SelectValue placeholder="Select a fruit" />
         </SelectTrigger>
         <SelectContent>
@@ -51,8 +61,8 @@ export default function JoinCondition() {
           <Plus />
         </DropdownMenuTrigger>
         <DropdownMenuContent>
-          <DropdownMenuItem >Add Group</DropdownMenuItem>
-          <DropdownMenuItem>Add Condition</DropdownMenuItem>
+          <DropdownMenuItem onClick={handleAddFilterRow("group")}>Add Group</DropdownMenuItem>
+          <DropdownMenuItem onClick={handleAddFilterRow("condition")}>Add Condition</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </div>

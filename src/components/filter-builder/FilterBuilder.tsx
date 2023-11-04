@@ -1,5 +1,6 @@
 import JoinCondition from "./JoinCondition";
 import { FilterContextProvider } from "./FilterContext";
+import FilterRows from "./FilterRows";
 
 interface Props {
   rowDefs: RowDefs[];
@@ -8,7 +9,10 @@ interface Props {
 export function FilterBuilder({ rowDefs }: Props) {
   return (
     <FilterContextProvider rowDefs={rowDefs}>
-      <JoinCondition />
+      <div className="flex justify-center flex-col m-6 gap-y-2">
+        <JoinCondition />
+        <FilterRows />
+      </div>
     </FilterContextProvider>
   );
 }
