@@ -7,7 +7,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { generateUniqueId } from "@/utils/utils";
 
 export default function JoinCondition() {
-  const { setFilterModel, filterModel } = useContext(FilterContext);
+  const { setFilterModel, filterModel, rowDefs } = useContext(FilterContext);
 
   const handleChange = (e: "AND" | "OR") => {
     setFilterModel(draft => (draft.type = e));
@@ -36,7 +36,7 @@ export default function JoinCondition() {
             type: "equals",
             parent: draft,
             level: draft.level,
-            colId: "",
+            colId: rowDefs[0].colId,
           }),
         );
     }

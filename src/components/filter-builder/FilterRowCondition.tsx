@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { ChangeEvent, useContext } from "react";
 import { Minus } from "lucide-react";
 
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
@@ -10,17 +10,36 @@ import { DatePicker } from "../ui/date-picker";
 
 interface Props {
   condition: ColumnAdvancedFilterModel;
-  rowDefs: RowDefs[];
 }
 
-const FilterValue = ({ condition, rowDefs }: Props) => {
+const FilterValue = ({ condition }: Props) => {
+  const { setFilterModel, rowDefs } = useContext(FilterContext);
+
   const row = rowDefs.find(row => row.colId === condition.colId);
+
+  const onChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setFilterModel(draft => {
+      const item = findItem(draft.conditions, condition.id, false);
+      if (item.filterType === "text") {
+        item.filter = e.target.value;
+      }
+    });
+  };
+
+  const onSelectChange = (value: string) => {
+    setFilterModel(draft => {
+      const item = findItem(draft.conditions, condition.id, false);
+      if (item.filterType === "text") {
+        item.filter = value;
+      }
+    });
+  };
 
   if (condition.filterType === "boolean") {
     return <></>;
-  } else if (condition.filterType === "text" && row.filterValues) {
+  } else if (condition.filterType === "text" && "filterValues" in row) {
     return (
-      <Select value={condition.filter}>
+      <Select onValueChange={onSelectChange} value={condition.filter}>
         <SelectTrigger className="w-auto">
           <SelectValue placeholder="Select a Value" />
         </SelectTrigger>
@@ -38,7 +57,7 @@ const FilterValue = ({ condition, rowDefs }: Props) => {
   } else if (condition.filterType.startsWith("date")) {
     return <DatePicker />;
   } else {
-    return <Input className="w-auto" />;
+    return <Input className="w-auto" onChange={onChange} />;
   }
 };
 
@@ -110,7 +129,7 @@ export default function FilterRowCondition({ condition }: Props) {
         </SelectContent>
       </Select>
 
-      <FilterValue condition={condition} rowDefs={rowDefs} />
+      <FilterValue condition={condition} />
     </div>
   );
 }
