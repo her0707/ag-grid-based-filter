@@ -1,5 +1,5 @@
 import { ChangeEvent, useContext } from "react";
-import { Minus } from "lucide-react";
+import { X } from "lucide-react";
 
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { FilterContext } from "./FilterContext";
@@ -96,9 +96,11 @@ export default function FilterRowCondition({ condition }: Props) {
     });
   };
 
+  const level = condition ? condition.level * 24 : 0;
+
   return (
-    <div className="flex items-center flex-row gap-x-2">
-      <Minus className="w-6 h-6" onClick={handleDelete} />
+    <div style={{ paddingLeft: level }} className="flex items-center flex-row gap-x-2">
+      <X className="w-6 h-6" onClick={handleDelete} />
       <Select onValueChange={handleColNameChange} value={condition.colId}>
         <SelectTrigger className="w-auto">
           <SelectValue placeholder="Select a Column" />

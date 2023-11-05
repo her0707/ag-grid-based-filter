@@ -15,7 +15,7 @@ interface ProviderProps {
 export const FilterContext = createContext<FilterBuilderValue>({
   filterModel: {
     filterType: "join",
-    level: 1,
+    level: 0,
     type: "AND",
     id: generateUniqueId(),
     conditions: [],
@@ -28,7 +28,7 @@ export const FilterContextProvider = ({ children, rowDefs }: PropsWithChildren<P
   const [filterModel, setFilterModel] = useState<JoinAdvancedFilterModel>({
     filterType: "join",
     type: "AND",
-    level: 1,
+    level: 0,
     id: generateUniqueId(),
     conditions: [],
   });
