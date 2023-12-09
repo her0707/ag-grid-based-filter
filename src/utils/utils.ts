@@ -15,8 +15,8 @@ export function generateUniqueId() {
   return timestamp + randomString;
 }
 
-export function findItem(items: AdvancedFilterModel[], id: string, withIndex?: boolean): FindItemReturnType {
-  let item: AdvancedFilterModel = null;
+export function findItem(items: AdvancedFilterModel[], id: string, withIndex?: boolean): FindItemReturnType | null {
+  let item: AdvancedFilterModel | null = null;
 
   for (var i = 0; i < items.length; i++) {
     item = items[i];

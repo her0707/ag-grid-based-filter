@@ -15,7 +15,17 @@ export default function JoinCondition({ condition }: Props) {
   const { setFilterModel, filterModel, rowDefs } = useContext(FilterContext);
 
   const handleChange = (e: "AND" | "OR") => {
-    setFilterModel(draft => (draft.type = e));
+    setFilterModel(draft => {
+      if (!condition) {
+        draft.type = e;
+        return;
+      }
+
+      const item = findItem(draft.conditions, condition.id, false);
+      if (item && !("colId" in item)) {
+        item.type = e;
+      }
+    });
   };
 
   const handleAddFilterRow = (type: "group" | "condition") => () => {
@@ -26,7 +36,7 @@ export default function JoinCondition({ condition }: Props) {
             const item = findItem(draft.conditions, condition.id, false);
 
             if (item && "conditions" in item) {
-              item.conditions.push({
+              item.conditions.unshift({
                 id: generateUniqueId(),
                 filterType: "join",
                 type: "AND",
@@ -54,7 +64,7 @@ export default function JoinCondition({ condition }: Props) {
             const item = findItem(draft.conditions, condition.id, false);
 
             if (item && "conditions" in item) {
-              item.conditions.push({
+              item.conditions.unshift({
                 id: generateUniqueId(),
                 filterType: "text",
                 type: "equals",
@@ -83,6 +93,8 @@ export default function JoinCondition({ condition }: Props) {
     setFilterModel(draft => {
       const item = findItem(draft.conditions, condition.id, true);
 
+      if (!item || !item?.index) return;
+
       draft.conditions.splice(item.index, 1);
     });
   };
@@ -93,7 +105,7 @@ export default function JoinCondition({ condition }: Props) {
     <>
       <div style={{ paddingLeft: level }} className="flex items-center gap-x-2">
         {condition && <X className="w-6 h-6" onClick={handleDelete} />}
-        <Select onValueChange={handleChange} value={filterModel.type}>
+        <Select onValueChange={handleChange} value={condition ? condition.type : filterModel.type}>
           <SelectTrigger className="w-auto">
             <SelectValue placeholder="Select a fruit" />
           </SelectTrigger>

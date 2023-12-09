@@ -20,6 +20,8 @@ const FilterValue = ({ condition }: Props) => {
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
     setFilterModel(draft => {
       const item = findItem(draft.conditions, condition.id, false);
+      if (!item || !item?.index) return;
+
       if (item.filterType === "text") {
         item.filter = e.target.value;
       }
@@ -29,6 +31,9 @@ const FilterValue = ({ condition }: Props) => {
   const onSelectChange = (value: string) => {
     setFilterModel(draft => {
       const item = findItem(draft.conditions, condition.id, false);
+
+      if (!item || !item?.index) return;
+
       if (item.filterType === "text") {
         item.filter = value;
       }
@@ -37,7 +42,7 @@ const FilterValue = ({ condition }: Props) => {
 
   if (condition.filterType === "boolean") {
     return <></>;
-  } else if (condition.filterType === "text" && "filterValues" in row) {
+  } else if (condition.filterType === "text" && row && "filterValues" in row) {
     return (
       <Select onValueChange={onSelectChange} value={condition.filter}>
         <SelectTrigger className="w-auto">
@@ -45,7 +50,7 @@ const FilterValue = ({ condition }: Props) => {
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
-            {row.filterValues.map(item => (
+            {row.filterValues?.map(item => (
               <SelectItem key={item.value} value={item.value}>
                 {item.text}
               </SelectItem>
@@ -68,8 +73,11 @@ export default function FilterRowCondition({ condition }: Props) {
     setFilterModel(draft => {
       const item = findItem(draft.conditions, condition.id, false);
 
-      if ("colId" in item) {
+      if (item && "colId" in item) {
         const row = rowDefs.find(row => row.colId === e);
+
+        if (!row) return;
+
         item.colId = e;
         item.filterType = row.colType;
       }
@@ -82,7 +90,7 @@ export default function FilterRowCondition({ condition }: Props) {
     setFilterModel(draft => {
       const item = findItem(draft.conditions, condition.id, false);
 
-      if ("colId" in item) {
+      if (item && "colId" in item) {
         item.type = operator;
       }
     });
@@ -91,6 +99,8 @@ export default function FilterRowCondition({ condition }: Props) {
   const handleDelete = () => {
     setFilterModel(draft => {
       const item = findItem(draft.conditions, condition.id, true);
+
+      if (!item || !item?.index) return;
 
       draft.conditions.splice(item.index, 1);
     });
