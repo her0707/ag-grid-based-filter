@@ -4,7 +4,7 @@ import { X, Plus } from "lucide-react";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { FilterContext } from "./FilterContext";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
-import { findItem, generateUniqueId } from "@/utils/utils";
+import { deleteItem, findItem, generateUniqueId } from "@/utils/utils";
 import FilterRowCondition from "./FilterRowCondition";
 
 interface Props {
@@ -93,9 +93,9 @@ export default function JoinCondition({ condition }: Props) {
     setFilterModel(draft => {
       const item = findItem(draft.conditions, condition.id, true);
 
-      if (!item || !item?.index) return;
+      if (!item) return;
 
-      draft.conditions.splice(item.index, 1);
+      deleteItem(draft.conditions, condition.id);
     });
   };
 

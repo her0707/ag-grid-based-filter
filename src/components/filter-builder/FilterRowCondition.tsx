@@ -3,7 +3,7 @@ import { X } from "lucide-react";
 
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { FilterContext } from "./FilterContext";
-import { findItem } from "@/utils/utils";
+import { deleteItem, findItem } from "@/utils/utils";
 import { operator } from "../constants/filter";
 import { Input } from "../ui/input";
 import { DatePicker } from "../ui/date-picker";
@@ -100,9 +100,9 @@ export default function FilterRowCondition({ condition }: Props) {
     setFilterModel(draft => {
       const item = findItem(draft.conditions, condition.id, true);
 
-      if (!item || !item?.index) return;
+      if (!item) return;
 
-      draft.conditions.splice(item.index, 1);
+      deleteItem(draft.conditions, condition.id);
     });
   };
 

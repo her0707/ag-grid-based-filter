@@ -18,7 +18,7 @@ export function generateUniqueId() {
 export function findItem(items: AdvancedFilterModel[], id: string, withIndex?: boolean): FindItemReturnType | null {
   let item: AdvancedFilterModel | null = null;
 
-  for (var i = 0; i < items.length; i++) {
+  for (let i = 0; i < items.length; i++) {
     item = items[i];
     if (item.id === id) {
       return withIndex ? { ...item, index: i } : item;
@@ -34,4 +34,21 @@ export function findItem(items: AdvancedFilterModel[], id: string, withIndex?: b
   }
 
   return null;
+}
+
+export function deleteItem(items: AdvancedFilterModel[], id: string) {
+  let item: AdvancedFilterModel | null = null;
+
+  for (let i = 0; i < items.length; i++) {
+    item = items[i];
+    if (item.id === id) {
+      items.splice(i, 1);
+
+      return;
+    }
+
+    if ("conditions" in item && item.conditions) {
+      deleteItem(item.conditions, id);
+    }
+  }
 }
